@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "Sentinel",
+    "slug": "sentinel",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "sentinel",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hackathon.sentinel"
+    },
+    "android": {
+      "package": "com.hackathon.sentinel"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow Sentinel to use your location for safety context and test emergency alerts."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#087B78"
+        }
+      ]
+    ]
+  }
+}
