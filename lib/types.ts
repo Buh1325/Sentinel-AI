@@ -21,6 +21,8 @@ export type IncidentStatus =
   | 'community-verified'
   | 'official';
 
+export type Visibility = 'public' | 'private';
+
 export interface Incident {
   id: string;
   category: IncidentCategory;
@@ -33,7 +35,20 @@ export interface Incident {
   province?: string;
   confidence?: number;
   source?: string;
+  /** When the event actually occurred. Falls back to created_at for older rows. */
+  incident_at?: string;
+  /** When the report was submitted to Sentinel. */
   created_at: string;
+  /** Reporter controls whether the incident can appear on public map/community views. */
+  visibility?: Visibility;
+  /** Optional human-readable area/street/landmark selected by the reporter. */
+  location_label?: string | null;
+  /** Local URI or a future remotely-hosted URL for supporting media. */
+  image_uri?: string | null;
+  video_uri?: string | null;
+  /** Media visibility is independent when the report itself is public. */
+  image_visibility?: Visibility;
+  video_visibility?: Visibility;
 }
 
 // ---------------------------------------------------------------------------

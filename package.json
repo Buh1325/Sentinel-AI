@@ -18,11 +18,17 @@
     "expo-secure-store": "~57.0.4",
     "react": "19.2.3",
     "react-native": "0.86.3",
-    "react-native-maps": "1.27.2"
+    "react-native-maps": "1.27.2",
+    "expo-image-picker": "~57.0.17",
+    "expo-video": "~57.0.4",
+    "expo-blur": "~57.0.3",
+    "react-native-safe-area-context": "~5.7.0",
+    "expo-audio": "~57.0.5",
+    "react-native-webview": "13.16.1"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
     "@types/react": "~19.2.0",
-    "typescript": "~5.9.2"
+    "typescript": "~6.0.3"
   }
 }

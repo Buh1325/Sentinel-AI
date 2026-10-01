@@ -162,3 +162,22 @@ Report  Safety  Emergency
 - Multi-agent orchestration, autonomous actions (the agent can only read data and notify you)
 
 These belong in the roadmap, not the hackathon MVP.
+
+## Latest emergency + map update
+
+- The home screen now places the large emergency control at the top for quick access.
+- Emergency activation can start an explicit, visible ambient-audio recording after microphone permission is granted. The user can stop the recording from the home screen.
+- The public safety map and incident-location picker now use OpenStreetMap/Leaflet inside `react-native-webview`, avoiding the Android black-map issue caused by native map configuration/API-key problems in Expo Go.
+- Community videos remain obscured by default and can be revealed with a tap.
+
+Install the added Expo-compatible packages with:
+
+```bash
+npx expo install expo-audio react-native-webview
+```
+
+Then restart Metro with a clean cache:
+
+```bash
+npx expo start -c
+```

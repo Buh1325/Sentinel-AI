@@ -23,8 +23,8 @@ export function distanceKm(a: Coords, b: Coords) {
 export function findRelevantIncidents(
   location: Coords,
   incidents: Incident[],
-  radiusKm = 1.5,
-  hoursBack = 12,
+  radiusKm = 2,
+  hoursBack = 7 * 24,
 ) {
   const cutoff = Date.now() - hoursBack * 60 * 60 * 1000;
 
@@ -35,7 +35,7 @@ export function findRelevantIncidents(
     }))
     .filter(
       ({ incident, distanceKm: distance }) =>
-        distance <= radiusKm && new Date(incident.created_at).getTime() >= cutoff,
+        distance <= radiusKm && new Date(incident.incident_at ?? incident.created_at).getTime() >= cutoff,
     )
     .sort((a, b) => a.distanceKm - b.distanceKm);
 }

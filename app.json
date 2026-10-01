@@ -25,6 +25,22 @@
         {
           "color": "#087B78"
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Sentinel to access photos and videos you choose to attach to incident reports.",
+          "cameraPermission": "Allow Sentinel to use the camera when you choose to capture incident evidence.",
+          "microphonePermission": "Allow Sentinel to use the microphone when you choose to record video evidence."
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow Sentinel to record ambient audio when you deliberately activate emergency mode.",
+          "recordAudioAndroid": true,
+          "enableBackgroundRecording": false
+        }
       ]
     ]
   }

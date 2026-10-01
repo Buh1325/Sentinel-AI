@@ -154,7 +154,7 @@ export async function runAgent(
     result: `${incidents.length} loaded`,
   });
 
-  // Find nearby incidents (1.5 km)
+  // Find nearby incidents (2 km)
   let nearby: Incident[] = [];
   if (location) {
     nearby = incidents.filter((i) => {
@@ -163,11 +163,11 @@ export async function runAgent(
         (i.longitude - location!.longitude) *
         111 *
         Math.cos((location!.latitude * Math.PI) / 180);
-      return Math.sqrt(dLat * dLat + dLon * dLon) < 1.5;
+      return Math.sqrt(dLat * dLat + dLon * dLon) < 2;
     });
     steps.push({
       tool: 'filterNearby',
-      result: `${nearby.length} within 1.5 km`,
+      result: `${nearby.length} within 2 km`,
     });
   }
 
@@ -200,7 +200,7 @@ export async function runAgent(
     }
   } else {
     lines.push('');
-    lines.push('No corroborated reports within 1.5 km right now.');
+    lines.push('No corroborated reports within 2 km right now.');
   }
 
   lines.push('');

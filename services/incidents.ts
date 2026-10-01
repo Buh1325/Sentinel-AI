@@ -2,6 +2,7 @@ import { supabase } from '../lib/supabase';
 import { Incident } from '../lib/types';
 
 function fromRow(row: Record<string, unknown>): Incident {
+  const createdAt = String(row.created_at);
   return {
     id: String(row.id),
     category: row.category as Incident['category'],
@@ -10,8 +11,18 @@ function fromRow(row: Record<string, unknown>): Incident {
     longitude: Number(row.longitude),
     severity: (row.severity as Incident['severity']) ?? 'medium',
     status: (row.status as Incident['status']) ?? 'unverified',
-    created_at: String(row.created_at),
-    source: 'community',
+    created_at: createdAt,
+    incident_at: row.incident_at ? String(row.incident_at) : createdAt,
+    source: String(row.source ?? 'community'),
+    city: row.city ? String(row.city) : undefined,
+    province: row.province ? String(row.province) : undefined,
+    confidence: row.confidence == null ? undefined : Number(row.confidence),
+    visibility: (row.visibility as Incident['visibility']) ?? 'public',
+    location_label: row.location_label ? String(row.location_label) : null,
+    image_uri: row.image_uri ? String(row.image_uri) : null,
+    video_uri: row.video_uri ? String(row.video_uri) : null,
+    image_visibility: (row.image_visibility as Incident['image_visibility']) ?? 'private',
+    video_visibility: (row.video_visibility as Incident['video_visibility']) ?? 'private',
   };
 }
 
@@ -27,10 +38,21 @@ export async function persistIncident(incident: Incident): Promise<boolean> {
     severity: incident.severity,
     status: incident.status,
     created_at: incident.created_at,
+    incident_at: incident.incident_at ?? incident.created_at,
+    source: incident.source ?? 'community',
+    city: incident.city ?? null,
+    province: incident.province ?? null,
+    confidence: incident.confidence ?? 1,
+    visibility: incident.visibility ?? 'public',
+    location_label: incident.location_label ?? null,
+    image_uri: incident.image_uri ?? null,
+    video_uri: incident.video_uri ?? null,
+    image_visibility: incident.image_visibility ?? 'private',
+    video_visibility: incident.video_visibility ?? 'private',
   });
 
   if (error) {
-    console.warn('Supabase incident insert failed; local demo state is still active.', error.message);
+    console.warn('Supabase incident insert failed; local state is still active.', error.message);
     return false;
   }
   return true;

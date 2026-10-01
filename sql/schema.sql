@@ -69,8 +69,12 @@ do $$ begin
 exception when duplicate_object then null; end $$;
 
 do $$ begin
-  create type incident_status as enum ('unverified','community-verified','official');
+  create type incident_status as enum ('unverified','corroborated','community-verified','official');
 exception when duplicate_object then null; end $$;
+
+do $$ begin
+  alter type incident_status add value if not exists 'corroborated';
+exception when others then null; end $$;
 
 create table if not exists public.incidents (
   id uuid primary key default gen_random_uuid(),
@@ -85,8 +89,27 @@ create table if not exists public.incidents (
   province text,
   confidence numeric default 1.0,
   source text default 'community',
+  incident_at timestamptz default timezone('utc'::text, now()) not null,
+  location_label text,
+  visibility text not null default 'public' check (visibility in ('public','private')),
+  image_uri text,
+  video_uri text,
+  image_visibility text not null default 'private' check (image_visibility in ('public','private')),
+  video_visibility text not null default 'private' check (video_visibility in ('public','private')),
   created_at timestamptz default timezone('utc'::text, now()) not null
 );
+
+-- Safe to rerun against an older Sentinel incidents table.
+alter table public.incidents add column if not exists incident_at timestamptz;
+update public.incidents set incident_at = created_at where incident_at is null;
+alter table public.incidents alter column incident_at set default timezone('utc'::text, now());
+alter table public.incidents alter column incident_at set not null;
+alter table public.incidents add column if not exists location_label text;
+alter table public.incidents add column if not exists visibility text not null default 'public';
+alter table public.incidents add column if not exists image_uri text;
+alter table public.incidents add column if not exists video_uri text;
+alter table public.incidents add column if not exists image_visibility text not null default 'private';
+alter table public.incidents add column if not exists video_visibility text not null default 'private';
 
 create index if not exists incidents_created_at_idx on public.incidents (created_at desc);
 create index if not exists incidents_category_idx on public.incidents (category);
@@ -94,10 +117,11 @@ create index if not exists incidents_category_idx on public.incidents (category)
 alter table public.incidents enable row level security;
 
 drop policy if exists "Anyone signed in can read incidents" on public.incidents;
-create policy "Anyone signed in can read incidents"
+drop policy if exists "Public incidents or own private incidents are readable" on public.incidents;
+create policy "Public incidents or own private incidents are readable"
   on public.incidents for select
   to authenticated, anon
-  using (true);
+  using (visibility = 'public' or (auth.uid() is not null and auth.uid() = reporter_id));
 
 drop policy if exists "Signed-in users can insert incidents" on public.incidents;
 create policy "Signed-in users can insert incidents"

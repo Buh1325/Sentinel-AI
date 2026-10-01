@@ -28,13 +28,13 @@ export function useSafetyMode() {
       const nearest = relevant[0];
 
       if (!nearest) {
-        setText('No recent incident reports found within 1.5 km of your current location.');
+        setText('No recent incident reports found within 2 km of your current location.');
         return;
       }
 
       const count = relevant.length;
       setText(
-        `${count} recent report${count === 1 ? '' : 's'} within 1.5 km. Nearest: ${nearest.incident.category}, ${nearest.distanceKm.toFixed(1)} km away.`,
+        `${count} recent report${count === 1 ? '' : 's'} within 2 km. Nearest: ${nearest.incident.category}, ${nearest.distanceKm.toFixed(1)} km away.`,
       );
 
       const fresh = relevant.filter(({ incident }) => !alerted.current.has(incident.id));
