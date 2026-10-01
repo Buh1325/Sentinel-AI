@@ -780,22 +780,11 @@ function EmergencyPanel() {
     }
   }
 
-  function trigger() {
-    Alert.alert(
-      'Activate emergency mode?',
-      'Sentinel will capture your current location and request microphone access to record ambient audio around the phone. Only activate this when you intend to record.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Activate', style: 'destructive', onPress: () => void activate() },
-      ],
-    );
-  }
-
   const seconds = Math.floor((recorderState.durationMillis ?? 0) / 1000);
 
   return (
     <View style={styles.emergencyPanel}>
-      <EmergencyButton loading={loading} recording={recorderState.isRecording} onPress={trigger} />
+      <EmergencyButton loading={loading} recording={recorderState.isRecording} onHoldComplete={() => void activate()} />
       {recorderState.isRecording ? (
         <View style={styles.recordingBar}>
           <View style={styles.recordingDot} />

@@ -31,6 +31,9 @@ const SAMPLES = [
   'Suspicious individuals loitering outside a primary school in Mitchells Plain.',
   'Domestic dispute reported on a residential street in Pietermaritzburg.',
   'Housebreak at a business park in Umhlanga, laptops stolen.',
+  'They grabbed her outside the shops, threw her in the car and drove off.',
+  'Some guys pulled me out my Polo and left with the car.',
+  'They cornered him and took his phone and wallet before running away.',
 ];
 
 function severityColor(sev: string) {
@@ -55,7 +58,7 @@ export function CategorizationDemo() {
   const run = useCallback(async () => {
     setBusy(true);
     try {
-      const r = await classifyIncident(text);
+      const r = await classifyIncident(text, { useAI: true });
       setResult(r);
     } finally {
       setBusy(false);
@@ -103,6 +106,12 @@ export function CategorizationDemo() {
 
       {result ? (
         <View style={styles.resultWrap}>
+          <View style={styles.modeRow}>
+            <Text style={[styles.modeBadge, result.mode === 'ai' ? styles.modeBadgeAI : styles.modeBadgeFallback]}>
+              {result.mode === 'ai' ? 'AI SEMANTIC' : 'ON-DEVICE FALLBACK'}
+            </Text>
+            {result.note ? <Text style={styles.modeNote}>{result.note}</Text> : null}
+          </View>
           <View style={styles.metaGrid}>
             <View style={styles.metaCell}>
               <Text style={styles.metaLabel}>Category</Text>
@@ -188,6 +197,11 @@ const styles = StyleSheet.create({
   },
   primaryText: { color: '#FFFFFF', fontWeight: '900' },
   resultWrap: { marginTop: 22 },
+  modeRow: { marginBottom: 14 },
+  modeBadge: { alignSelf: 'flex-start', borderRadius: 999, paddingHorizontal: 10, paddingVertical: 6, color: '#FFFFFF', fontSize: 10, fontWeight: '900', letterSpacing: 0.7 },
+  modeBadgeAI: { backgroundColor: '#087B78' },
+  modeBadgeFallback: { backgroundColor: '#52636D' },
+  modeNote: { marginTop: 7, color: colors.muted, fontSize: 11, lineHeight: 16 },
   metaGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

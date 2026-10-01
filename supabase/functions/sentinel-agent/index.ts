@@ -19,8 +19,8 @@ Deno.serve(async (req) => {
   } catch {
     return json({ error: 'Invalid JSON' }, 400);
   }
-  if (typeof body.system !== 'string' || !Array.isArray(body.messages) || !Array.isArray(body.tools)) {
-    return json({ error: 'Expected { system, messages, tools }' }, 400);
+  if (typeof body.system !== 'string' || !Array.isArray(body.messages) || (body.tools !== undefined && !Array.isArray(body.tools))) {
+    return json({ error: 'Expected { system, messages, tools? }' }, 400);
   }
 
   const upstream = await fetch('https://api.anthropic.com/v1/messages', {
@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
       max_tokens: 700, // fixed server-side so clients cannot inflate cost
       system: body.system,
       messages: body.messages,
-      tools: body.tools,
+      ...(Array.isArray(body.tools) && body.tools.length > 0 ? { tools: body.tools } : {}),
     }),
   });
 
